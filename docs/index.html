@@ -45,6 +45,20 @@
     display: none;
   }
 
+  #calibration-overlay {
+    position: fixed; inset: 0;
+    z-index: 0;
+    display: none;
+    background: linear-gradient(to right, #fff 50%, #000 50%);
+    pointer-events: none;
+  }
+
+  #calibration-stop {
+    position: fixed; bottom: 48px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 20; display: none;
+  }
+
   /* ── progress bar ── */
   #progress-track {
     position: fixed; bottom: 0; left: 0;
@@ -254,6 +268,10 @@
 
 <div id="flash-overlay"></div>
 <canvas id="grating-canvas"></canvas>
+<div id="calibration-overlay"></div>
+<div id="calibration-stop">
+  <button class="btn-secondary" onclick="stopCalibration()">Stop Calibration</button>
+</div>
 <div id="progress-track"><div id="progress-bar"></div></div>
 <div id="phase-label">—</div>
 
@@ -267,6 +285,8 @@
     <label for="mode-flicker">Flicker</label>
     <input type="radio" name="mode" id="mode-grating" value="grating" onchange="updateMode()">
     <label for="mode-grating">Grating</label>
+    <input type="radio" name="mode" id="mode-calib" value="calibration" onchange="updateMode()">
+    <label for="mode-calib">Calibration</label>
   </div>
 
   <!-- Session params -->
@@ -328,6 +348,15 @@
       <div class="param-label">Stimulus</div>
       <div class="param-value" style="font-size:14px">Full-field 5 Hz square-wave</div>
       <div class="param-sub">Black ↔ White, time-based (no frame-count drift)</div>
+    </div>
+  </div>
+
+  <!-- Calibration info (calibration only) -->
+  <div id="calibration-info" style="width:100%;display:none">
+    <div class="param full">
+      <div class="param-label">Calibration</div>
+      <div class="param-value" style="font-size:14px">Left: White · Right: Black</div>
+      <div class="param-sub">50/50 split — place light meter against each half to measure luminance</div>
     </div>
   </div>
 
@@ -444,11 +473,16 @@ function updateSFDisplay() {
 
 function updateMode() {
   stimMode = document.querySelector('input[name="mode"]:checked').value;
-  const sfCtrl  = document.getElementById('sf-controls');
-  const flkInfo = document.getElementById('flicker-info');
-  const isGrat  = stimMode === 'grating';
-  sfCtrl.style.display  = isGrat ? 'flex' : 'none';
-  flkInfo.style.display = isGrat ? 'none' : 'block';
+  const sfCtrl    = document.getElementById('sf-controls');
+  const flkInfo   = document.getElementById('flicker-info');
+  const calibInfo = document.getElementById('calibration-info');
+  const isGrat    = stimMode === 'grating';
+  const isCalib   = stimMode === 'calibration';
+  sfCtrl.style.display    = isGrat  ? 'flex'  : 'none';
+  flkInfo.style.display   = (!isGrat && !isCalib) ? 'block' : 'none';
+  calibInfo.style.display = isCalib ? 'block' : 'none';
+  document.getElementById('btn-start').textContent =
+    isCalib ? 'Show Calibration' : 'Start Session';
 }
 
 // ─────────────────────────────────────────────
@@ -636,7 +670,24 @@ function tick(now) {
   animId = requestAnimationFrame(tick);
 }
 
+// ─────────────────────────────────────────────
+//  Calibration
+// ─────────────────────────────────────────────
+function startCalibration() {
+  uiSetup.style.display = 'none';
+  document.getElementById('calibration-overlay').style.display = 'block';
+  document.getElementById('calibration-stop').style.display = 'block';
+}
+
+function stopCalibration() {
+  document.getElementById('calibration-overlay').style.display = 'none';
+  document.getElementById('calibration-stop').style.display = 'none';
+  uiSetup.style.display = 'flex';
+}
+
 function startProtocol() {
+  if (stimMode === 'calibration') { startCalibration(); return; }
+
   // Init WebGL on first user gesture (required by browsers)
   if (stimMode === 'grating' && !glInitialized) {
     sizeCanvas();
