@@ -365,8 +365,8 @@
       </div>
       <div class="param">
         <div class="param-label">Duration</div>
-        <div class="param-value">30 min</div>
-        <div class="param-sub">10 × 1 min blocks</div>
+        <div class="param-value">22 min</div>
+        <div class="param-sub">20 × 30 s blocks</div>
       </div>
       <div class="param">
         <div class="param-label">Contrast</div>
@@ -375,7 +375,7 @@
       </div>
       <div class="param">
         <div class="param-label">Rest</div>
-        <div class="param-value">1 min</div>
+        <div class="param-value">30 s</div>
         <div class="param-sub">inter-block</div>
       </div>
     </div>
@@ -777,14 +777,13 @@ function startProtocol() {
     if (!glInitialized) initWebGL();
     PHASE_DEFS = buildGratingProtocol();
   } else {
-    // Flicker: original 10-block protocol
+    // Flicker: 2-min baseline, 20 × 30s ON / 30s OFF
     PHASE_DEFS = [
-      { name: 'Baseline',  type: 'dark',    dur: 5 * 60 },
-      ...Array.from({ length: 10 }, (_, i) => ([
-        { name: `Block ${i+1} ON`,  type: 'flicker', dur: 60 },
-        { name: `Block ${i+1} OFF`, type: 'dark',    dur: 60 },
+      { name: 'Baseline',  type: 'dark',    dur: 2 * 60 },
+      ...Array.from({ length: 20 }, (_, i) => ([
+        { name: `Block ${i+1} ON`,  type: 'flicker', dur: 30 },
+        { name: `Block ${i+1} OFF`, type: 'dark',    dur: 30 },
       ])).flat(),
-      { name: 'Recovery',  type: 'dark',    dur: 5 * 60 },
     ];
   }
 
