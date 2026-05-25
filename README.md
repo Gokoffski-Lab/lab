@@ -3,6 +3,7 @@
 A single-page web app for delivering calibrated visual stimuli to rats. Designed for an **iPad 5th gen (264 ppi)** at a **25 cm viewing distance**, giving 47.6 px/deg of visual angle.
 
 Hosted via GitHub Pages from `docs/index.html`.
+URL: https://winstonaluk.github.io/GokoffskiLab/
 
 ---
 
