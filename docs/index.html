@@ -388,15 +388,6 @@
 
   </div><!-- /flicker-section -->
 
-  <!-- Calibration info (calibration only) -->
-  <div id="calibration-info" style="width:100%;display:none">
-    <div class="param full">
-      <div class="param-label">Calibration</div>
-      <div class="param-value" style="font-size:14px">Left: White · Right: Black</div>
-      <div class="param-sub">50/50 split — place light meter against each half to measure luminance</div>
-    </div>
-  </div>
-
   <button class="btn-primary" id="btn-start" onclick="startProtocol()">Start Session</button>
 </div>
 
@@ -523,7 +514,9 @@ function setDarkDur(min) {
 
 function updateMode() {
   stimMode = document.querySelector('input[name="mode"]:checked').value;
-  const isGrat = stimMode === 'grating';
+  const isGrat  = stimMode === 'grating';
+  const isCalib = stimMode === 'calibration';
+  if (isCalib) { startCalibration(); return; }
   document.getElementById('grating-section').style.display = isGrat ? 'flex' : 'none';
   document.getElementById('flicker-section').style.display = isGrat ? 'none' : 'flex';
 }
@@ -770,6 +763,11 @@ function startCalibration() {
 function stopCalibration() {
   document.getElementById('calibration-overlay').style.display = 'none';
   document.getElementById('calibration-stop').style.display = 'none';
+  // Reset to Grating (the default) so the setup panel is in a clean state
+  document.getElementById('mode-grating').checked = true;
+  stimMode = 'grating';
+  document.getElementById('grating-section').style.display = 'flex';
+  document.getElementById('flicker-section').style.display = 'none';
   uiSetup.style.display = 'flex';
 }
 
