@@ -1,0 +1,47 @@
+# ---- Lab data never goes in git (it lives on CRSP) ----
+data/
+sourcedata/
+derivatives/
+*.pl2
+*.plx
+*.mat
+*.ims
+*.czi
+*.nd2
+*.lif
+*.tif
+*.tiff
+*.avi
+*.mp4
+*.h264
+*.h5
+*.db
+*.sqlite
+*.fdb
+*.xlsx
+*.xls
+# Re-include small test fixtures explicitly, e.g.:
+# !shared/tests/fixtures/*.tif
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# ---- MATLAB ----
+*.asv
+*.m~
+slprj/
+
+# ---- Docs build ----
+site/
+
+# ---- OS / editors ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.obsidian/workspace*.json
