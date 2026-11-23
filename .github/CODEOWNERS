@@ -1,0 +1,6 @@
+# Reviews are required for these paths once branch protection is on.
+# Add lab members' GitHub handles as they take ownership of folders.
+*                     @winstonaluk
+/data-system/         @winstonaluk
+/shared/              @winstonaluk
+/docs/sops/           @winstonaluk

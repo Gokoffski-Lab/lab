@@ -1,0 +1,17 @@
+name: Workflow / docs request
+description: A workflow that isn't documented, or a page that's out of date
+labels: [docs]
+body:
+  - type: input
+    id: workflow
+    attributes:
+      label: Workflow or page
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What's missing or wrong?
+      description: Rough steps are fine. Someone will turn them into a page.
+    validations:
+      required: true

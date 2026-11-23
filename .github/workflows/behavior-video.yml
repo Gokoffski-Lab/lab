@@ -1,0 +1,36 @@
+name: behavior-video tests
+
+on:
+  push:
+    branches: [main]
+    paths: ["acquisition/behavior-video/**", ".github/workflows/behavior-video.yml"]
+  pull_request:
+    paths: ["acquisition/behavior-video/**", ".github/workflows/behavior-video.yml"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [shared, acquisition, analysis]
+    defaults:
+      run:
+        working-directory: acquisition/behavior-video
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Qt system libraries
+        if: matrix.package == 'acquisition'
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libgl1 libxkbcommon0 libfontconfig1 libdbus-1-3
+      - name: Install
+        run: |
+          pip install -e shared
+          if [ -f ${{ matrix.package }}/requirements.txt ]; then pip install -r ${{ matrix.package }}/requirements.txt; fi
+          pip install pytest
+      - name: Test
+        run: cd ${{ matrix.package }} && python -m pytest -q

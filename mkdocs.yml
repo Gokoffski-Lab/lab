@@ -1,0 +1,55 @@
+site_name: Gokoffski Lab
+site_description: SOPs, workflows and software docs for the Gokoffski lab (UCI)
+repo_url: https://github.com/Gokoffski-Lab/lab
+edit_uri: edit/main/docs/
+docs_dir: docs
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - search.suggest
+    - content.action.edit
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - SOPs:
+      - Data organization: sops/data-organization.md
+      - File naming: sops/file-naming.md
+      - CRSP access: sops/crsp-access.md
+  - Workflows:
+      - workflows/index.md
+      - Behavior video (PDCT): workflows/behavior-video-pdct.md
+      - Visual stimuli: workflows/visual-stimuli.md
+      - Ephys .pl2 conversion: workflows/ephys-pl2-conversion.md
+      - ERG / VEP export: workflows/erg-export.md
+      - RBPMS counting: workflows/rbpms-count.md
+      - Sholl analysis (SNT): workflows/sholl-snt.md
+      - Imaris: workflows/imaris.md
+      - OptoDrum: workflows/optodrum.md
+      - New workflow template: workflows/_template.md
+  - Setup:
+      - PTB-3 on Apple Silicon: setup/ptb3-apple-silicon.md
+      - Blackfly S / Spinnaker: setup/blackfly-spinnaker.md
+      - UCI HPC3: setup/hpc3.md
+  - Decisions:
+      - decisions/index.md
+      - 0001 One lab monorepo: decisions/0001-monorepo.md
+      - 0002 SQLite single writer: decisions/0002-sqlite-single-writer.md
+      - 0003 BIDS-style file names: decisions/0003-bids-file-naming.md
+  - Migration status: migration.md

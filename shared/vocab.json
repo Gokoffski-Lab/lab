@@ -1,0 +1,21 @@
+{
+  "_about": "Controlled vocabulary for file names. Single source for Python (python/labnaming.py) and MATLAB (matlab/lab_filename.m). Edited only by the data steward. Long-term this is generated from the vocab_* tables in lab.db.",
+  "version": "0.1.0",
+  "eye": ["OD", "OS", "OU"],
+  "modality": [
+    "lfp",
+    "erg",
+    "phnr",
+    "fvep",
+    "perg",
+    "okn",
+    "prt",
+    "vca",
+    "pdct",
+    "impedance",
+    "fundus",
+    "rbpms",
+    "ctb",
+    "video"
+  ]
+}
