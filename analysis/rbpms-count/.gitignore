@@ -5,8 +5,22 @@ output/
 *.czi
 *.tif
 *.tiff
+*.btf
 *.lif
 *.nd2
+*.oib
+*.oif
+*.oir
+*.lsm
+*.ims
+*.vsi
+*.ics
+*.ids
+*.zvi
+*.lei
+*.dv
+*.stk
+*.nd
 .ipynb_checkpoints/
 __pycache__/
 # tracking log lists real animals: local only (the lab repo is public)
