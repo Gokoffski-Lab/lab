@@ -92,8 +92,9 @@ rbpms-count/
 
 - **Name each retina folder with the animal number and the eye**: `1001L` is animal 1001, left eye; `1001R` is
   the right eye. Extra text after it is fine (`1001L - XY`). The analysis uses these names to add up counts per animal.
-- Image files can be `.czi`, `.tif`, `.lif` or `.nd2`.
-- Your images are never changed. The notebook only reads them.
+- Image files can be `.czi`, `.lif`, `.nd2`, `.tif`, `.tiff`, `.btf`, `.oib`, `.oif`, `.oir`, `.lsm`, `.ims`, `.vsi`, `.ics`, `.zvi`, `.lei`, `.dv`, `.stk`, or `.nd`.
+- Your images are never changed. The notebook inspects each file's format and metadata, normalizes non-TIFF images (and multi-channel or Z-stack images) into single-channel 2D `.tif` files under `output/normalized/`, and counts from those copies.
+- Large `.tif` images wider or taller than `TILE_SIZE` (default `2048` px) are automatically split into overlapping `.tif` tiles under `output/tiles/`. Each tile is counted individually, and only cells whose centroid lies inside that tile's non-overlapping core are kept, so counts across all tiles sum to one exact total per original image without double-counting.
 - Images can also stay where they are (for example on a shared drive): type that folder in the notebook's Settings box instead.
 
 ### Open the notebook
@@ -106,18 +107,18 @@ The notebook is a list of boxes. Grey boxes contain code; the others are instruc
 **Click on a grey box and press Shift + Enter** to run it. Its result appears underneath. Go from top to bottom.
 While a box runs, it shows `[*]` on its left.
 
-1. **Settings box:** check the folder names, and choose which animals to count (`COUNT_WHICH`).
+1. **Settings box:** check the folder names, `TILE_SIZE`, and which animals to count (`COUNT_WHICH`).
 2. **Set-up box:** it should print "Fiji found at: ...". If not, see "Something went wrong" below.
 3. **Tracking log box:** shows which animals on the list are not mounted, waiting to be counted, or waiting for review
    (see "Tracking which animals are done").
-4. **Step 1, automated count:** takes about 1 to 2 seconds per image. Then look at the example image it shows.
-5. **Step 2, review:** review your images in Fiji (see below). The review tool comes from the update site
-   (see "Before you start"). The notebook's "install review tool" box is only needed if you did not add the update site.
-6. **Step 3, analysis:** run the remaining boxes. Your tables and figures are saved in `output/results`.
-7. **Update the tracking log:** run the last box, then share the log (see "Tracking which animals are done").
+4. **Inspect images box:** reads file headers without loading pixels and lists each image's detected format, size, pixel calibration, planned tile count, and any problem that would skip it.
+5. **Step 1, automated count:** normalizes non-TIFFs to `.tif`, cuts large images into `.tif` tiles, counts each tile, and folds per-tile counts into one row per original image in `output/counts/auto_counts.csv`.
+6. **Step 2, review:** review your images in Fiji (see below). Tiled images are reviewed tile by tile (cropped to each tile's core so no cell appears twice across tiles), and the notebook folds tile reviews back into one row per original image.
+7. **Step 3, analysis:** run the remaining boxes. Your tables and figures are saved in `output/results`.
+8. **Update the tracking log:** run the last box, then share the log (see "Tracking which animals are done").
 
-You can close everything and come back later; nothing is lost. Images already counted are not counted again,
-and images already reviewed stay reviewed.
+You can close everything and come back later; nothing is lost. Tiles already counted are skipped on re-run,
+and fields already reviewed stay reviewed.
 
 ---
 
@@ -153,20 +154,25 @@ Everything is in the `output` folder:
 
 | File or folder | What it is |
 |---|---|
-| `counted/<retina>/<image>.tif` | your image with the counted cells marked; open it in Fiji |
-| `counted/<retina>/<image>.jpg` | a picture of the same, for a quick look |
-| `counts/auto_counts.csv` | the automated count of every image |
-| `counts/manual_counts.csv` | your reviewed count of every image, with who reviewed it and when |
-| `results/counts_per_image.csv` | one row per image: automated count, cells removed, cells added, final count |
+| `normalized/<retina>/<image>.tif` | single-channel 2D `.tif` normalized from the original image, plus `.json` provenance |
+| `tiles/<retina>/<image>/<tile>.tif` | padded `.tif` tiles for images larger than `TILE_SIZE` |
+| `counted/<retina>/<tile>.tif` | core-cropped `.tif` with counted cells outlined; open it in Fiji |
+| `counted/<retina>/<tile>.jpg` | a picture of the same, for a quick look (`<image>.jpg` shows the full tiled overview) |
+| `rois/<retina>/<tile>_rois.csv` | per-cell measurements with both local tile and parent image coordinates |
+| `counts/images.csv` | survey of input files: detected format, dimensions, pixel size, problems |
+| `counts/plan.json` | tile grid and core/margin plan used for the run |
+| `counts/tiles.csv` | per-tile automated counts, core bounds, and core pixel areas |
+| `counts/auto_counts.csv` | one row per original image (summed across tiles) |
+| `counts/tile_manual_counts.csv` | per-tile review rows saved by Fiji's review tool |
+| `counts/manual_counts.csv` | one reviewed row per original image (folded once all tiles are reviewed) |
+| `results/counts_per_image.csv` | one row per image: automated count, removed, added, final count, `area_mm2`, `cells_per_mm2` |
 | `results/counts_per_eye.csv` | total count for each retina, and the mean per image |
 | `results/counts_per_animal.csv` | left eye, right eye and both together for each animal |
 | `results/figures/` | figures of the counts per image, per animal, and automated vs reviewed |
 
 The .csv files open in Excel, Numbers or Google Sheets.
 
-**About totals:** a total is the sum over that retina's images. Only compare totals between retinas with the same
-number of images (the tables show how many). Each 20x image covers the same area (0.146 mm²), so to get cells per mm²,
-divide a count per image by 0.146.
+**About totals and densities:** a retina total is the sum over that retina's original images, and each image total is the exact sum over its non-overlapping tile cores. `area_mm2` and `cells_per_mm2` in `counts/auto_counts.csv` and `results/counts_per_image.csv` are computed from each image's calibrated pixel size (`um_per_px`) and total core pixel area (`core_px`). If an image lacks valid microscope calibration (including plain 72-dpi TIFFs), those columns remain blank rather than guessing `0.146 mm²`.
 
 The notebook also warns you about folder names it cannot read (no animal number, or no L/R), files that look like
 copies (`... (2).czi`), and an eye that appears in two folders.
@@ -282,8 +288,10 @@ resets are requested there too. See [imagej.net/update-sites/setup](https://imag
 The notebook calls `scripts/rbpms.py`, which can also be run directly:
 
 ```bash
-python scripts/rbpms.py count                          # step 1: images in data/, results in output/
-python scripts/rbpms.py count --data /path/to/images --min-contrast 1.0
+python scripts/rbpms.py inspect                        # inspect input formats, sizes, and tile counts
+python scripts/rbpms.py count                          # step 1: normalize, tile, count, fold into auto_counts.csv
+python scripts/rbpms.py count --data /path/to/images --tile-px 2048 --min-contrast 1.0
+python scripts/rbpms.py tile --data /path/to/images    # write padded .tif tiles without counting
 python scripts/rbpms.py count --priority today        # only animals marked "today" in tracking/animals.csv
 python scripts/rbpms.py install-review-tool            # step 2 set-up
 python scripts/rbpms.py status                         # step 2 progress
@@ -291,12 +299,24 @@ python scripts/rbpms.py log --data /path/to/images     # update tracking/STATUS.
 python scripts/rbpms.py log --eyes L                   # the same, left eyes only
 ```
 
+## Tests
+
+Run the automated test suite with fake inputs only (no real lab images):
+
+```bash
+python -m unittest discover -s tests -v
 ```
-rbpms_count.ipynb              the notebook (steps 1, 2 and 3)
-scripts/rbpms.py               finds Fiji and runs the count; used by the notebook
-scripts/count_rgc.groovy       the counting itself, run inside Fiji
+
+`test_tiling.py` and `test_ledger.py` run in pure Python without Fiji. `test_pipeline_fiji.py` generates synthetic multi-channel TIFFs and non-TIFF `.ics` images in a temporary directory and runs the full normalize-tile-count-review-fold pipeline in headless Fiji when Fiji is installed (set `RBPMS_TEST_FIJI=1` to fail if Fiji is missing).
+
+```
+rbpms_count.ipynb              the notebook (inspect, steps 1, 2 and 3)
+scripts/rbpms.py               finds Fiji, surveys inputs, runs counts, folds ledgers
+scripts/tiling.py              tile grid geometry, core partition, auto/manual count folding
+scripts/count_rgc.groovy       Bio-Formats inspection/normalization and SimpleRGC tile counting
 scripts/review_counts.groovy   the review tool installed into Fiji
+tests/                         unit, ledger, and synthetic Fiji end-to-end tests
 tracking/                      the tracking log (animals.csv, STATUS.md, status.csv)
 data/                          your images (not uploaded to GitHub)
-output/                        results (not uploaded to GitHub)
+output/                        normalized TIFFs, tiles, ROIs, counts, and results (not uploaded)
 ```

@@ -7,7 +7,8 @@
 /*
  * Manual review of automated RGC counts (run in Fiji with its normal window, not headless).
  *
- * For every counted image written by count_rgc.groovy (counted/<sample>/<image>.tif):
+ * For every counted field written by count_rgc.groovy (counted/<sample>/<tile>.tif -- one file per
+ * tile of a tiled image, or one file per image when the image fits in a single tile):
  *   - opens the original image with the automated outlines
  *       magenta = counted by the pipeline, cyan = rejected by the brightness filter
  *   - places one yellow point on every counted cell
@@ -19,8 +20,11 @@
  *     unreviewed; Cancel ends the session. Progress is kept, so a session can be resumed.
  *
  * Output (in the output folder):
- *   counts/manual_counts.csv                 one row per reviewed image
- *   counted/<sample>/<image>.tif             overlay updated with the final points (green)
+ *   counts/tile_manual_counts.csv            one row per reviewed .tif in counted/<sample>/
+ *   counted/<sample>/<tile>.tif              overlay updated with the final points (green)
+ *
+ * scripts/rbpms.py folds those rows up into counts/manual_counts.csv, one row per image, and only
+ * calls an image reviewed once every one of its tiles has been.
  *
  * Install: copy this file to Fiji.app/scripts/Plugins/RGC/Review_Counts.groovy and restart Fiji;
  * it then appears as Plugins > RGC > Review Counts. It can also be opened and run from File > Open.
@@ -45,7 +49,7 @@ if (!reviewDir.isDirectory()) {
 }
 
 // ---------------- progress file ----------------
-def countsFile = new File(manualDir, "manual_counts.csv")
+def countsFile = new File(manualDir, "tile_manual_counts.csv")
 def header = "sample,image,auto_count,removed,added,final_count,reviewer,reviewed_at,seconds,note"
 if (!countsFile.exists()) countsFile.text = header + "\n"
 def reviewed = [] as Set
@@ -57,7 +61,8 @@ def csvSafe = { String s -> (s ?: "").replace(",", ";").replace("\n", " ").trim(
 def wanted = samples?.trim() ? (samples.split(";")*.trim().findAll { it } as Set) : null
 def fields = []
 reviewDir.eachFileRecurse { f ->
-    if (f.isFile() && f.name.toLowerCase().endsWith(".tif")) {
+    // "partial_" files are half-written output left behind by an interrupted count
+    if (f.isFile() && f.name.toLowerCase().endsWith(".tif") && !f.name.startsWith("partial_")) {
         def sample = f.parentFile.name
         def image = f.name.replaceAll(/(?i)\.tif$/, "")
         if (wanted && !wanted.contains(sample)) return
@@ -213,7 +218,9 @@ for (int k = 0; k < fields.size(); k++) {
 }
 
 int total = 0, nRev = 0
-reviewDir.eachFileRecurse { if (it.isFile() && it.name.toLowerCase().endsWith(".tif")) total++ }
+reviewDir.eachFileRecurse {
+    if (it.isFile() && it.name.toLowerCase().endsWith(".tif") && !it.name.startsWith("partial_")) total++
+}
 nRev = countsFile.readLines().size() - 1
-def msg = "Reviewed this session: ${done}\nReviewed in total: ${nRev} of ${total} images"
+def msg = "Reviewed this session: ${done}\nReviewed in total: ${nRev} of ${total} fields"
 if (simulate) { println msg; System.exit(0) } else IJ.showMessage("RGC review", msg)
