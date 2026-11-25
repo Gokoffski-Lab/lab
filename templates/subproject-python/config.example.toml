@@ -1,0 +1,7 @@
+# Copy to config.toml (gitignored) and edit. Never commit real CRSP paths with usernames.
+[paths]
+input = "<CRSP sourcedata path>"
+output = "<CRSP derivatives path>"
+
+[params]
+# tunable values live here, not as literals in code
