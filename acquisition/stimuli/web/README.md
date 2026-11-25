@@ -1,8 +1,15 @@
-# GokoffskiLab — Rat Visual Stimulus
+# stimuli/web: rat visual stimulus (iPad)
+
+> **Status:** ✅ active · **Owner:** @winstonaluk · **Language:** HTML/JS (WebGL, single file) ·
+> **Runs on:** iPad 5th gen, Safari · **Live:** https://gokoffski-lab.github.io/lab/stimuli/ ·
+> **Docs:** [Visual stimuli](https://gokoffski-lab.github.io/lab/workflows/visual-stimuli/)
+>
+> Imported from `winstonaluk/fUS_VisualStim` (archived) with full history. To test changes locally, open
+> `index.html` in a browser. Merging to `main` redeploys it.
 
 A single-page web app for delivering calibrated visual stimuli to rats. Designed for an **iPad 5th gen (264 ppi)** at a **25 cm viewing distance**, giving 47.6 px/deg of visual angle.
 
-Hosted on the lab docs site: `docs/index.html` is copied to `/stimuli/` by `.github/workflows/docs.yml`.
+Hosted on the lab docs site: `index.html` is copied to `/stimuli/` by `.github/workflows/docs.yml`.
 URL: https://gokoffski-lab.github.io/lab/stimuli/ (previously https://winstonaluk.github.io/GokoffskiLab/)
 
 ---
@@ -54,7 +61,7 @@ where `f` = cycles/pixel and `T` = temporal frequency (Hz).
 > **Display geometry:** iPad 5th gen, 264 ppi, 25 cm viewing distance.
 > Screen width (landscape) = 2048 px / 264 ppi × 2.54 cm = 19.69 cm.
 > Visual angle = 2 × atan(9.845/25) × (180/π) = 43.0°. px/deg = 47.6.
-> If the viewing distance changes, update `PIXELS_PER_DEG` in `docs/index.html`.
+> If the viewing distance changes, update `PIXELS_PER_DEG` in `index.html`.
 
 ---
 
