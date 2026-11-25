@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# data and outputs stay out of git -- they are large and not reproducible from source
+data/*
+!data/.gitkeep
+results/*
+!results/.gitkeep
+landmarks/*
+!landmarks/.gitkeep
+*.ome.tiff
+*.lif
+*.czi
+*.tif
+*.tiff

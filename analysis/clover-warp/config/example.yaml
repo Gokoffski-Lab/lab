@@ -1,0 +1,91 @@
+# clover-warp configuration. Copy per dataset and keep it with the results.
+#
+# Every number that affects a result lives here, and the resolved config is
+# written next to the outputs as <dataset>_config_used.yaml. A result whose
+# config is not alongside it is not reproducible.
+
+dataset: example_L
+
+# --- species and eye geometry ------------------------------------------------
+# MEASURE THESE for your colony. The built-in defaults in frames.py are
+# literature order-of-magnitude values, and rim_eccentricity_deg is a
+# calibration constant, not a cosmetic bound -- it sets the angular scale.
+species: rat
+retinal_radius_mm: 3.0
+rim_eccentricity_deg: 105.0
+
+# azimuthal_equidistant (default) or stereographic for a whole clover.
+# gnomonic and orthographic fold at 90 deg and will be REFUSED for a retina
+# that extends past their domain -- see docs/METHOD.md section 1, A3.
+projection: azimuthal_equidistant
+
+# --- inputs ------------------------------------------------------------------
+fa_image: data/example_L_fa.tiff
+flatmount_image: data/example_L_flatmount.ome.tiff
+
+# 0-based channel indices in the flatmount image.
+# vessel_channel must be a vasculature stain (isolectin GS-IB4, collagen IV,
+# CD31). tissue_channel should fill the WHOLE retina -- do not use the RBPMS
+# channel, which labels nothing outside the ganglion cell layer and gives a
+# mask that is patchy in exactly the damaged regions you care about.
+vessel_channel: 2
+tissue_channel: 3
+
+# Cell centroids from Imaris Spots / rbpms-count / Fiji. Column names are
+# sniffed. Imaris exports MICRONS: set scale to 1 / um_per_px.
+centroid_table: data/example_L_spots.csv
+centroid_scale_to_px: 1.0
+
+# --- geometry calibration ----------------------------------------------------
+# The two most important numbers in this file. Measure the disc on the vessel
+# convergence point in the FA; the auto-estimate is for a first look only.
+# Leave null to infer (and expect bias).
+fa_disc_xy: [1024.0, 1024.0]
+fa_rim_radius_px: 880.0
+
+# --- stages ------------------------------------------------------------------
+n_petals: 4            # null to infer from the radial extent profile
+
+# How far outside its own sector a petal may match in the FA, radians.
+# Covers rotation introduced during mounting. Too large reintroduces the
+# rotational ambiguity this prior exists to remove.
+sector_pad_rad: 0.35
+
+warp_model: tps        # tps | affine | similarity
+# 0.0 only for hand-placed, trusted landmarks. 1e-3 to 1e-2 for automatic
+# correspondences, where a handful will be wrong.
+warp_smoothing: 0.001
+
+vessels:
+  # SET THESE FROM YOUR PIXEL SIZE. Expected vessel half-widths in pixels:
+  # at 0.5 um/px a 6 um capillary is ~6 px across, a 40 um arteriole ~80 px.
+  # Getting this wrong is the commonest reason a vessel mask looks like noise.
+  scales_px: [2.0, 4.0, 8.0, 16.0]
+  clip_limit: 0.02
+  threshold: otsu      # otsu | li | a float in [0, 1]
+  min_object_px: 64
+  closing_px: 2
+  invert: false        # true for red-free fundus (dark vessels), false for FA
+
+matching:
+  k: 5                       # candidates kept per petal bifurcation
+  ransac_threshold_px: 40.0  # generous: a similarity model cannot absorb the
+                             # real non-rigid stretch; the TPS afterwards is
+                             # what delivers the final accuracy
+  ransac_iterations: 2000
+  min_inliers: 8
+  seed: 0
+
+# Calibrate these against the manual-landmark reference and the synthetic
+# benchmark, then write the measured numbers here. Do not loosen them to make
+# a batch pass.
+gates:
+  min_landmarks: 8
+  max_loo_px: 25.0
+  max_stretch: 3.0
+  min_coverage: 0.75
+
+# --- outputs -----------------------------------------------------------------
+outdir: results/example_L
+n_rings: 8
+density_bin_px: 100.0
