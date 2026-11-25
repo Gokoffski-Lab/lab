@@ -21,6 +21,8 @@ and pick **Bug** or **Workflow / docs request**.
 
 ## For people writing code
 
+Read [Working in the monorepo](contributing/monorepo.md) first. The short version:
+
 - Clone: `git clone https://github.com/Gokoffski-Lab/lab.git`
 - Work on a branch, open a pull request. CI runs the tests for the folders you changed.
 - Each subproject has its own environment; read its README first.

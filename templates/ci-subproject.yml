@@ -1,0 +1,36 @@
+# Copy to .github/workflows/<name>.yml and replace <path> / <name>.
+# Keep only the job(s) your subproject needs.
+name: <name> tests
+
+on:
+  push:
+    branches: [main]
+    paths: ["<path>/**", "shared/**", ".github/workflows/<name>.yml"]
+  pull_request:
+    paths: ["<path>/**", "shared/**", ".github/workflows/<name>.yml"]
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: <path>
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+  matlab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: matlab-actions/setup-matlab@v2
+        # with:
+        #   products: Signal_Processing_Toolbox
+      - uses: matlab-actions/run-tests@v2
+        with:
+          source-folder: <path>; shared/matlab
+          select-by-folder: <path>/tests

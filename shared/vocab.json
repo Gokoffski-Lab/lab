@@ -1,7 +1,16 @@
 {
   "_about": "Controlled vocabulary for file names. Single source for Python (python/labnaming.py) and MATLAB (matlab/lab_filename.m). Edited only by the data steward. Long-term this is generated from the vocab_* tables in lab.db.",
-  "version": "0.1.0",
-  "eye": ["OD", "OS", "OU"],
+  "version": "0.2.0",
+  "eye": [
+    "OD",
+    "OS",
+    "OU"
+  ],
+  "legacy_eye_map": {
+    "_about": "Old pl2_to_mat.m names used LE/RE. Map them to the canonical codes; never write LE/RE in new names.",
+    "LE": "OS",
+    "RE": "OD"
+  },
   "modality": [
     "lfp",
     "erg",

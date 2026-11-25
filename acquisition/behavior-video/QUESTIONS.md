@@ -2,7 +2,7 @@
 
 One entry per ambiguity: file, the decision faced, options considered, which
 was chosen, and why. Implemented as the most conservative interpretation per
-`overnight-prompt.md`.
+`notes/overnight-prompt.md`.
 
 ---
 

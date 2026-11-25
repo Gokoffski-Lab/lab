@@ -40,12 +40,18 @@ read by both helpers.
     name = lab_filename('R042', '2026-11-23', 'fvep', 'txt', 'eye', 'OD', 'run', 1);
     ```
 
-!!! warning "Open decision"
-    Eye coding: the schema uses `OD/OS/OU`, but `pl2_to_mat.m` output names use `LE/RE`.
-    `vocab.json` follows the schema (`OD/OS/OU`) until this is decided. Changing it means one edit to `vocab.json`.
+## Eye codes
+
+**`OD` (right), `OS` (left), `OU` (both)**, everywhere, in Python and MATLAB.
+
+The old `pl2_to_mat.m` names used `LE/RE`. Both builders still accept those codes and convert them
+(`LE`→`OS`, `RE`→`OD`), so old metadata CSVs keep working. New names are always written with OD/OS/OU,
+and the parser rejects `eye-LE`/`eye-RE`. To convert a single value, use `normalize_eye()` (Python)
+or `lab_eye_code()` (MATLAB).
 
 ## Legacy names
 
 Existing ephys `.mat` files use `brainregion_LE/RE_Light_StimFreq_StimAmplitude_File<N>.mat`
-(from `pl2_to_mat.m`). Keep them as-is in `sourcedata/`. The migration script maps them to the new
-scheme in `lab.db` instead of renaming files.
+(from the old `pl2_to_mat.m`). Keep them as-is in `sourcedata/`, which is write-once. The migration
+script records their new-scheme names in `lab.db` instead of renaming files. From now on, `pl2_to_mat.m`
+should name its output with `lab_filename.m`.

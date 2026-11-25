@@ -4,7 +4,8 @@
 
 ## What it produces
 - `pl2_to_mat.m` batch-converts Plexon `.pl2` recordings to `.mat` (MATLAB 5.0 format) and renames them
-  from a metadata CSV. Current output names: `brainregion_LE/RE_Light_StimFreq_StimAmplitude_File<N>.mat`.
+  from a metadata CSV. Old output names: `brainregion_LE/RE_Light_StimFreq_StimAmplitude_File<N>.mat`
+(legacy; new output follows [File naming](../sops/file-naming.md)).
 - `summarize_recording_duration_triggers.m` writes the recording duration and trigger count for each file to a summary CSV.
 
 ## Before you start
@@ -19,4 +20,5 @@
 - MATLAB 5.0 `.mat` can't be partly read (`load`/`matfile` can't pull single struct-array fields). For speed,
   load only the variables and channels you need, and use `parfor` across files.
 - Planned: write duration/trigger count during conversion so summaries don't reload waveforms.
-- Planned: build output names with `shared/matlab/lab_filename.m`. Needs the OD/OS vs LE/RE decision first.
+- To do when importing: replace the hand-built names in `pl2_to_mat.m` with `shared/matlab/lab_filename.m`.
+  Eye codes are OD/OS/OU. `LE`/`RE` values in old metadata CSVs are converted automatically (`LE`→`OS`, `RE`→`OD`).

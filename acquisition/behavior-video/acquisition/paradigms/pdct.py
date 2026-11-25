@@ -1,4 +1,4 @@
-"""Pole Descent Cognitive Test. The only paradigm this app ships."""
+"""Pole Descent Cliff Task. The only paradigm this app ships."""
 
 from __future__ import annotations
 
