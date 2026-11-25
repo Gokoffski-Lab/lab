@@ -14,7 +14,7 @@ Data steward: Winston. PI: Dr. Gokoffski.
 | Raw instrument files | CRSP lab `share/` → `sourcedata/` (**write-once**: read-only after ingest) |
 | Processed outputs | CRSP `derivatives/` |
 | Metadata registry | `lab.db` (SQLite). Snapshots pushed to CRSP `registry/` |
-| Code, SOPs, workflows | This repo |
+| Code, SOPs, workflows | This repo (**public**, see [decision 0004](../decisions/0004-public-repo.md)) |
 | Signed GLP forms, PII | **Not** on CRSP or in this repo |
 
 Lab data always goes in the lab `share/` area, never in personal folders or on laptops long-term.

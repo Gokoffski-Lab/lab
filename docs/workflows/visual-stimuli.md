@@ -17,4 +17,4 @@ Pre/post rest phases with alternating stimulus / black-screen cycles and 10 Hz f
 Runs on Apple Silicon with the fixes in [PTB-3 on Apple Silicon](../setup/ptb3-apple-silicon.md).
 
 !!! note "TODO"
-    The PTB script isn't committed yet. Add it to `acquisition/stimuli/ptb/` with a parameter table.
+    The PTB script isn't committed yet. See [Migration status](../migration.md).

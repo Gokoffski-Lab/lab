@@ -1,4 +1,4 @@
-# Behavior video: PDCT
+# Behavior video: PDCT (Pole Descent Cliff Task)
 
 **Owner:** Winston · **Projects:** Amblyopia – Rats (PDCT), mTOR/Rheb (VCA, same pipeline) ·
 **Code:** [`acquisition/behavior-video/`](https://github.com/Gokoffski-Lab/lab/tree/main/acquisition/behavior-video)
@@ -29,6 +29,3 @@ PySpin comes from the Spinnaker SDK download, not PyPI.
 ## Steps
 !!! note "TODO"
     Write the operator steps: session setup screen → start trial (keypress) → exclusion flags (fall / freeze / no descent) → review → where files land on CRSP.
-
-!!! warning "Naming"
-    The code says PDCT = "Pole Descent **Cognitive Test**". The lab glossary says "Pole Descent **Cliff Task**". Pick one.

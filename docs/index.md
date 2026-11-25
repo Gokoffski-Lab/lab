@@ -27,4 +27,4 @@ SOPs, workflows and software documentation for the Gokoffski lab (UC Irvine, Gav
 | mTOR/Rheb | metadata, PhNR, fVEP, pERG, LFP, behavior (VCA) |
 
 Abbreviations: WET whole eye transplant · GCR glaucoma · PRT pupillary reflex test · VCA visual cliff assay ·
-PDCT pole descent task · NS/NG NeuroShank/NeuroGrid.
+PDCT pole descent cliff task · NS/NG NeuroShank/NeuroGrid.
