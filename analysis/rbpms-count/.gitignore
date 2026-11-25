@@ -1,0 +1,15 @@
+# images and results stay out of git
+data/*
+!data/.gitkeep
+output/
+*.czi
+*.tif
+*.tiff
+*.lif
+*.nd2
+.ipynb_checkpoints/
+__pycache__/
+# tracking log lists real animals: local only (the lab repo is public)
+tracking/*
+!tracking/README.md
+!tracking/animals.example.csv

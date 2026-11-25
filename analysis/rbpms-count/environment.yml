@@ -1,0 +1,15 @@
+# Conda environment for this project. Create it with:
+#   conda env create -f environment.yml
+# If conda says Terms of Service have not been accepted, create it from conda-forge only instead:
+#   conda create -n rbpms-count --override-channels -c conda-forge python=3.12 "pandas>=2.0" "matplotlib>=3.7" jinja2 ipykernel
+# Then: conda activate rbpms-count
+name: rbpms-count
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - pandas>=2.0
+  - matplotlib>=3.7
+  - jinja2          # for the tables in the notebook
+  - ipykernel       # lets Jupyter / VS Code run the notebook in this environment

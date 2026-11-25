@@ -1,0 +1,22 @@
+name: clover-warp tests
+
+on:
+  push:
+    branches: [main]
+    paths: ["analysis/clover-warp/**", ".github/workflows/clover-warp.yml"]
+  pull_request:
+    paths: ["analysis/clover-warp/**", ".github/workflows/clover-warp.yml"]
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: analysis/clover-warp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: pytest -q

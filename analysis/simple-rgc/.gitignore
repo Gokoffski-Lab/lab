@@ -1,0 +1,6 @@
+
+# local sample-group assignments (blinding) and generated reports: never commit
+config/
+share/
+results/
+data/

@@ -1,0 +1,8 @@
+metric,value
+auc_250_to_1000um (fraction_of_pre x um),136.53
+farthest_um_at_or_above_0.5_of_pre,95.5
+farthest_um_at_or_above_0.25_of_pre,434.5
+farthest_um_at_or_above_0.1_of_pre,888.5
+farthest_um_at_or_above_0.05_of_pre,1323.5
+max_measurable_distance_um,1399.5
+slices_included,8 of 12
