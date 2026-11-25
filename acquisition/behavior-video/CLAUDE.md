@@ -1,6 +1,6 @@
-# CLAUDE.md — monorepo root
+# CLAUDE.md — behavior-video subproject (PDCT acquisition + analysis)
 
-This repository contains two independent applications plus a shared schema
+This subproject (`acquisition/behavior-video/` in the lab monorepo) contains two independent applications plus a shared schema
 package that is the contract between them.
 
 ```
@@ -15,5 +15,5 @@ subdirectory — each carries its own domain context, architecture invariants,
 and checkpoint list. Keep app-specific code inside its own subdirectory; the
 only code shared between the two is `shared/schema/`.
 
-`QUESTIONS.md` at repo root collects ambiguities logged during unattended runs.
-`OVERNIGHT_REPORT.md` at repo root is the run summary for the current build.
+`QUESTIONS.md` at the behavior-video root collects ambiguities logged during unattended runs.
+`notes/OVERNIGHT_REPORT.md` is the summary of the initial unattended build (prompt: `notes/overnight-prompt.md`).

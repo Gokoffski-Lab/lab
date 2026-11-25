@@ -20,7 +20,7 @@ Current paradigm: **PDCT**. The architecture must accommodate future paradigms
 
 | Term | Meaning |
 |---|---|
-| **PDCT** | Pole Descent Cognitive Test. Rat placed atop a vertical pole, descends. |
+| **PDCT** | Pole Descent Cliff Task. Rat placed atop a vertical pole, descends. |
 | **Trial** | One descent, start to finish. Currently 1–5 minutes for our rats. |
 | **Session** | All trials for one animal on one day. |
 | **DeepLabCut / DLC** | Markerless pose-estimation framework. Consumes our video offline. |
@@ -267,7 +267,7 @@ pytest
 When running headless (`claude -p`) I cannot answer questions. Therefore:
 
 - **Never guess on an ambiguity you would normally ask about.** Append it to
-  `QUESTIONS.md` at repo root with the affected file and line, implement the most
+  `QUESTIONS.md` at the behavior-video root with the affected file and line, implement the most
   conservative interpretation, mark it `# TODO(QUESTIONS.md): <ref>` in code, and
   continue.
 - **A checkpoint is not complete until `pytest` passes.** If tests fail and can't

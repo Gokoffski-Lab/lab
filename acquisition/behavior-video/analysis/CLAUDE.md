@@ -23,7 +23,7 @@ cannot be obtained any other way. Design every stage to serve `y(t)` accuracy.
 
 | Term | Meaning |
 |---|---|
-| **PDCT** | Pole Descent Cognitive Test. Rat placed atop a vertical pole, descends. |
+| **PDCT** | Pole Descent Cliff Task. Rat placed atop a vertical pole, descends. |
 | **VCA** | Visual Cliff Assay. Second paradigm, same pipeline. |
 | **Trial** | One descent. 1–5 minutes for our rats. One video file. |
 | **Session** | All trials for one animal on one day. |
@@ -277,7 +277,7 @@ repo. These are a **contract, not an incidental format**.
 When running headless (`claude -p`) I cannot answer questions. Therefore:
 
 - **Never guess on an ambiguity you would normally ask about.** Append it to
-  `QUESTIONS.md` at repo root with the affected file and line, implement the most
+  `QUESTIONS.md` at the behavior-video root with the affected file and line, implement the most
   conservative interpretation, mark it `# TODO(QUESTIONS.md): <ref>` in code, and
   continue. Scientific-definition questions (descent rule parameters, QC
   thresholds, filter windows) go here rather than being invented.
