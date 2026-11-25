@@ -1,6 +1,6 @@
 # Ephys: `.pl2` → `.mat` conversion
 
-**Owner:** Winston · **Code:** [`acquisition/ephys/`](https://github.com/Gokoffski-Lab/lab/tree/main/acquisition/ephys) (pending import)
+**Owner:** Winston · **Code:** [`acquisition/ephys/`](https://github.com/Gokoffski-Lab/lab/tree/main/acquisition/ephys) 
 
 ## What it produces
 - `pl2_to_mat.m` batch-converts Plexon `.pl2` recordings to `.mat` (MATLAB 5.0 format) and renames them
