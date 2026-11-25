@@ -1,0 +1,32 @@
+name: repo hygiene
+
+# The repo is public (docs/decisions/0004-public-repo.md). Block data files and large files
+# from being added in pull requests and on main.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check added/changed files
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE" 2>/dev/null; then BASE=$(git rev-list --max-parents=0 HEAD | tail -1); fi
+          files=$(git diff --name-only --diff-filter=AM "$BASE" HEAD)
+          fail=0
+          blocked='\.(pl2|plx|mat|ims|czi|nd2|lif|tif|tiff|avi|mp4|h264|h5|db|sqlite|fdb|fd4|exp|xlsx|xls)$'
+          for f in $files; do
+            [ -f "$f" ] || continue
+            if echo "$f" | grep -qiE "$blocked"; then echo "::error file=$f::data-type file (data lives on CRSP, not git)"; fail=1; fi
+            size=$(stat -c %s "$f")
+            if [ "$size" -gt 5242880 ]; then echo "::error file=$f::file is $((size/1048576)) MB (limit 5 MB)"; fail=1; fi
+          done
+          exit $fail

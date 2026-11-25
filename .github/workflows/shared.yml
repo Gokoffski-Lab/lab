@@ -8,7 +8,18 @@ on:
     paths: ["shared/**", ".github/workflows/shared.yml"]
 
 jobs:
-  test:
+  matlab:
+    # MATLAB on GitHub Actions is free for public repositories.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: matlab-actions/setup-matlab@v2
+      - uses: matlab-actions/run-tests@v2
+        with:
+          source-folder: shared/matlab
+          select-by-folder: shared/matlab/tests
+
+  python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
