@@ -1,25 +1,29 @@
-# data-system/
+# data-system: lab metadata registry
 
-Lab metadata registry: `lab.db` (SQLite) schema v0.2, GLP audit triggers, migrations, and the Streamlit dashboard.
+> **Status:** ⏳ missing code · **Owner:** @winstonaluk · **Language:** SQL (SQLite), Python (Streamlit) ·
+> **Runs on:** one data-entry machine (single writer), snapshots to CRSP `registry/` ·
+> **Docs:** [Data organization](https://gokoffski-lab.github.io/lab/sops/data-organization/) · [Decision 0002](../docs/decisions/0002-sqlite-single-writer.md)
 
-**Status: ⏳ to import.** The code is in Winston's local `lab.db` repo, which isn't on GitHub yet.
+`lab.db` schema v0.2 (29 tables, views, GLP audit triggers), migrations from the lab spreadsheets, and the Streamlit dashboard.
 
-Expected layout after import:
-```
-data-system/
-├── db/schema.sql               # 29 tables, views, GLP audit triggers (section 10)
-├── db/gen_audit_triggers.py    # re-run after ANY table change
-├── db/seed_from_diagram.sql
-├── tests/test_schema.py        # pytest -q, must pass before a schema change lands
-├── demo/                       # static demo dashboard + sample JSON
-├── docs/erd/build_erd.py
-└── scripts/                    # profiling / cleaning / migration
-```
-
-Import (keeps history, if the local folder is a git repo):
+## Missing code
+The whole folder. It's the local `lab.db` repo described in the project handoff. Import it with its history:
 ```bash
 git subtree add --prefix=data-system /path/to/local/lab-db-repo main
 ```
-If it isn't a git repo, copy the files in and commit.
 
-`data/raw/` (original lab `.xlsx`) is **never committed**. The root `.gitignore` blocks `.xlsx`, `.db` and `data/`.
+| File | Purpose |
+|---|---|
+| `db/schema.sql` | schema v0.2, GLP audit triggers in section 10 |
+| `db/gen_audit_triggers.py` | regenerates section 10. **Re-run after any table change** |
+| `db/seed_from_diagram.sql` | vocab + projects + one smoke-test rat |
+| `tests/test_schema.py` | `pytest -q`, must pass before a schema change lands |
+| `demo/` | static demo dashboard + sample JSON (**fake data only**, the repo is public) |
+| `docs/erd/build_erd.py` | ER diagram generator |
+| `scripts/` | profiling / cleaning / migration (to build) |
+
+**Never commit** `data/raw/` (original lab `.xlsx`) or any `lab.db`. The root `.gitignore` and the
+`repo-hygiene` CI check block them. After importing, delete the old repo's own `.gitignore` entries
+only if they duplicate the root ones.
+
+After import: add `.github/workflows/data-system.yml` (copy `shared.yml`, change the paths, run `pytest -q` in `data-system/`).
