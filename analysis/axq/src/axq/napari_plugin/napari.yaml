@@ -1,0 +1,10 @@
+name: axq
+display_name: axq quantification
+contributions:
+  commands:
+    - id: axq.quantify
+      python_name: axq.napari_plugin.widget:QuantifyWidget
+      title: Quantify
+  widgets:
+    - command: axq.quantify
+      display_name: Quantify
