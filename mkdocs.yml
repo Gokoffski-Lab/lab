@@ -39,6 +39,8 @@ nav:
       - Ephys .pl2 conversion: workflows/ephys-pl2-conversion.md
       - ERG / VEP export: workflows/erg-export.md
       - RBPMS counting: workflows/rbpms-count.md
+      - Optic nerve axon density (axq): workflows/axon-density.md
+      - Clover flatmount reconstruction: workflows/clover-warp.md
       - Sholl analysis (SNT): workflows/sholl-snt.md
       - Imaris: workflows/imaris.md
       - OptoDrum: workflows/optodrum.md
