@@ -16,7 +16,8 @@ vocab = jsondecode(fileread(fullfile(fileparts(mfilename('fullpath')), '..', 'vo
 
 parts = {['sub-' checkLabel('sub', sub)], ['ses-' sessionStr(ses)]};
 if ~isempty(opt.eye)
-    parts{end+1} = ['eye-' checkVocab('eye', opt.eye, vocab.eye)];
+    % Accepts OD/OS/OU (any case) and legacy LE/RE; always writes OD/OS/OU.
+    parts{end+1} = ['eye-' lab_eye_code(opt.eye)];
 end
 if ~isempty(opt.stim)
     parts{end+1} = ['stim-' checkLabel('stim', opt.stim)];

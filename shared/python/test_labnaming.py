@@ -2,7 +2,21 @@ import datetime as dt
 
 import pytest
 
-from labnaming import build_filename, is_valid, parse_filename
+from labnaming import build_filename, is_valid, normalize_eye, parse_filename
+
+
+@pytest.mark.parametrize("given,expected", [
+    ("OD", "OD"), ("os", "OS"), (" OU ", "OU"),
+    ("LE", "OS"), ("RE", "OD"), ("re", "OD"),
+])
+def test_normalize_eye(given, expected):
+    assert normalize_eye(given) == expected
+
+
+@pytest.mark.parametrize("bad", ["L", "BE", "_about", ""])
+def test_normalize_eye_rejects(bad):
+    with pytest.raises(ValueError):
+        normalize_eye(bad)
 
 
 def test_build_full():
@@ -14,6 +28,15 @@ def test_build_full():
 
 def test_build_minimal_and_date_object():
     assert build_filename("P7", dt.date(2026, 1, 5), "erg", ".csv") == "sub-P7_ses-20260105_erg.csv"
+
+
+def test_build_maps_legacy_eye():
+    assert build_filename("R1", "20261123", "lfp", "mat", eye="LE") == "sub-R1_ses-20261123_eye-OS_lfp.mat"
+    assert build_filename("R1", "20261123", "lfp", "mat", eye="re") == "sub-R1_ses-20261123_eye-OD_lfp.mat"
+
+
+def test_parse_rejects_legacy_eye():
+    assert not is_valid("sub-R1_ses-20261123_eye-LE_lfp.mat")
 
 
 def test_roundtrip():
@@ -32,7 +55,7 @@ def test_multi_part_extension():
     dict(sub="R42", ses="11/23/2026"),
     dict(sub="R42", ses="2026-02-30"),
     dict(sub="R42", modality="FVEP"),  # case matters
-    dict(sub="R42", eye="LE"),         # not in vocab (open decision)
+    dict(sub="R42", eye="L"),          # not a known eye code
     dict(sub="R42", run=0),
     dict(sub="R42", stim="10 Hz"),
 ])

@@ -75,7 +75,8 @@ def build_filename(
     vocab = vocab or load_vocab()
     parts = [f"sub-{_check_label('sub', sub)}", f"ses-{_session_str(ses)}"]
     if eye is not None:
-        parts.append(f"eye-{_check_vocab('eye', eye, vocab)}")
+        # Accepts OD/OS/OU (any case) and legacy LE/RE; always writes OD/OS/OU.
+        parts.append(f"eye-{normalize_eye(eye, vocab=vocab)}")
     if stim is not None:
         parts.append(f"stim-{_check_label('stim', stim)}")
     if run is not None:
@@ -102,6 +103,18 @@ def parse_filename(name: str, *, vocab: dict | None = None) -> dict:
     _check_vocab("modality", d["modality"], vocab)
     d["run"] = int(d["run"]) if d["run"] is not None else None
     return d
+
+
+def normalize_eye(code: str, *, vocab: dict | None = None) -> str:
+    """Return the canonical eye code (OD/OS/OU). Legacy LE/RE are mapped via vocab.json."""
+    vocab = vocab or load_vocab()
+    code = str(code).strip().upper()
+    if code in vocab["eye"]:
+        return code
+    legacy = {k: v for k, v in vocab.get("legacy_eye_map", {}).items() if not k.startswith("_")}
+    if code in legacy:
+        return legacy[code]
+    raise ValueError(f"unknown eye code {code!r} (allowed: {', '.join(vocab['eye'])}; legacy: {', '.join(legacy)})")
 
 
 def is_valid(name: str) -> bool:
